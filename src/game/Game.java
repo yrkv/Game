@@ -38,7 +38,7 @@ public class Game extends JComponent
 		
 		level = new Level(v, f);
 		
-		cam = new Camera(-4, 1.5, 0, 60.0 / 180 * Math.PI, level);
+		cam = new Camera(5, -2, 0, 20.0 / 180 * Math.PI, 20.0 / 180 * Math.PI, level);
 	}
 
 	public static void main(String[] args)
