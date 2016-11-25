@@ -19,8 +19,15 @@ public class Camera {
 		screenDist = 4;
 	}
 	
-	public void move() {
-		
+	public void move(double x, double y, double z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
+	}
+	
+	public void rotate(double rotX, double rotY) {
+		this.rotX += rotX;
+		this.rotY += rotY;
 	}
 	
 	public int[][][] view(int n) {
@@ -55,5 +62,9 @@ public class Camera {
 		newerV[2] = -Math.sin(rotY) * newV[0] + Math.cos(rotY) * newV[2]; 
 		
 		return newerV;
+	}
+	
+	public double[] getRot() {
+		return new double[] {rotX, rotY};
 	}
 }
