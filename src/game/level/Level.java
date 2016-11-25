@@ -3,22 +3,18 @@ package game.level;
 public class Level {
 	private int[][] f3, f4;
 	private double[][] v;
+	private int[][][] f;
 	
-	public Level(double[][] v, int[][] f3, int[][] f4) {
+	public Level(double[][] v, int[][][] f) {
 		this.v = v;
-		this.f3 = f3;
-		this.f4 = f4;
+		this.f = f;
 	}
 	
 	public double[][] getV()	{
 		return v;
 	}
 	
-	public int[][] getF4()	{
-		return f4;
-	}
-	
-	public int[][] getF3()	{
-		return f3;
+	public int[][] getF(int n) {
+		return f[n - 3];
 	}
 }

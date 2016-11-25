@@ -34,12 +34,11 @@ public class Game extends JComponent
 		frame = new JFrame();
 		screen = new Screen(width, height);
 		double[][] v = {{1, 0, 10}, {0, 0, 10}, {0, 1, 10}, {1, 1, 10}, {1, 0, 11}, {0, 0, 11}, {0, 1, 11}, {1, 1, 11}};
-		int[][] f3 = {};
-		int[][] f4 = {{0, 1, 2, 3}, {4, 5, 6, 7}, {1, 2, 6, 5}, {2, 3, 7, 6}, {0, 1, 5, 4}, {0, 3, 7, 4}};
+		int[][][] f = {{}, {{0, 1, 2, 3}, {4, 5, 6, 7}, {1, 2, 6, 5}, {2, 3, 7, 6}, {0, 1, 5, 4}, {0, 3, 7, 4}}};
 		
-		level = new Level(v, f3, f4);
+		level = new Level(v, f);
 		
-		cam = new Camera(-4, 1.5, 0, 0, level);
+		cam = new Camera(-4, 1.5, 0, 60.0 / 180 * Math.PI, level);
 	}
 
 	public static void main(String[] args)
@@ -64,7 +63,7 @@ public class Game extends JComponent
 		
 		g2.setColor(Color.black);
 		
-		int[][][] points = cam.view3();
+		int[][][] points = cam.view(3);
 
 		for (int i = 0; i < points.length; i++) {
 			int[] a = {points[i][0][0], points[i][1][0], points[i][2][0]};
@@ -72,7 +71,7 @@ public class Game extends JComponent
 			g2.drawPolygon(a, b, 3);
 		}
 		
-		points = cam.view4();
+		points = cam.view(4);
 
 		for (int i = 0; i < points.length; i++) {
 			int[] a = {points[i][0][0], points[i][1][0], points[i][2][0], points[i][3][0]};
