@@ -26,8 +26,8 @@ public class Camera {
 	}
 	
 	public void rotate(double rotX, double rotY) {
-		this.rotX += rotX;
-		this.rotY += rotY;
+		this.rotX = rotX;
+		this.rotY = rotY;
 	}
 	
 	public int[][][] view(int n) {
@@ -52,16 +52,22 @@ public class Camera {
 	// It is probably faster to do it that way.
 	private double[] rotationMatrix(double[] v) {
 		double[] newV = new double[3];
-		newV[0] = v[0];
-		newV[1] = Math.cos(rotX) * v[1] - Math.sin(rotX) * v[2];
-		newV[2] = Math.sin(rotX) * v[1] + Math.cos(rotX) * v[2];
+		
+		newV[0] = v[0] - x;
+		newV[1] = v[1] - y;
+		newV[2] = v[2] - z;
 		
 		double[] newerV = new double[3];
-		newerV[0] = Math.cos(rotY) * newV[0] + Math.sin(rotY) * newV[2];
-		newerV[1] = newV[1];
-		newerV[2] = -Math.sin(rotY) * newV[0] + Math.cos(rotY) * newV[2]; 
+		newerV[0] = newV[0];
+		newerV[1] = Math.cos(rotX) * newV[1] - Math.sin(rotX) * newV[2];
+		newerV[2] = Math.sin(rotX) * newV[1] + Math.cos(rotX) * newV[2];
 		
-		return newerV;
+		double[] newestV = new double[3];
+		newestV[0] = Math.cos(rotY) * newerV[0] + Math.sin(rotY) * newerV[2] + x;
+		newestV[1] = newerV[1] + y;
+		newestV[2] = -Math.sin(rotY) * newerV[0] + Math.cos(rotY) * newerV[2] + z; 
+		
+		return newestV;
 	}
 	
 	public double[] getRot() {

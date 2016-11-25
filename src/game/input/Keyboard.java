@@ -16,11 +16,11 @@ public class Keyboard implements KeyListener {
 		space = keys[KeyEvent.VK_SPACE];
 		q = keys[KeyEvent.VK_Q];
 		e = keys[KeyEvent.VK_E];
-		
 	}
 
 	public void keyPressed(KeyEvent e) {
 		keys[e.getKeyCode()] = true;
+		System.out.println(q);
 	}
 
 	public void keyReleased(KeyEvent e) {
