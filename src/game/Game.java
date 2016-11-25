@@ -80,6 +80,7 @@ public class Game extends Canvas implements Runnable {
 		thread = new Thread(this, "Display");
 		thread.start();
 		running = true;
+		Mouse.centerMouse();
 	}
 	
 	private synchronized void stop() {

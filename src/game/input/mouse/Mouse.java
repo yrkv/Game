@@ -11,18 +11,21 @@ public class Mouse {
 	public int x, y;
 	public boolean dragging;
 
-	private int xDiffTotal, yDiffTotal;
+	static int xDiffTotal;
+	static int yDiffTotal;
 	
-	private Robot robot;
-	private JFrame frame;
+	private static Robot robot;
+	static JFrame frame;
 	
-	private MouseMotion mouseMotion = new MouseMotion();
-	private MouseEvents mouseEvents = new MouseEvents();
+	private MouseMotion mouseMotion;
+	private MouseEvents mouseEvents;
 	
 	public Mouse(Game game) {
+		frame = game.frame;
+		mouseMotion = new MouseMotion();
+		mouseEvents = new MouseEvents();
 		game.addMouseMotionListener(mouseMotion);
 		game.addMouseListener(mouseEvents);
-		frame = game.frame;
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
@@ -33,12 +36,10 @@ public class Mouse {
 	public void update() {
 		x = mouseMotion.x;
 		y = mouseMotion.y;
-		xDiffTotal += mouseMotion.xDiff;
-		yDiffTotal += mouseMotion.yDiff;
-		if (frame.isFocused()) centerMouse();
+		if (Game.totalTicks == 0) centerMouse();
 	}
 	
-	public void centerMouse() {
+	public static void centerMouse() {
 		robot.mouseMove((int) frame.getLocationOnScreen().getX() + Game.centerX,
 				(int) frame.getLocationOnScreen().getY() + Game.centerY);
 	}
@@ -49,5 +50,10 @@ public class Mouse {
 	
 	public int getYDiffTotal() {
 		return yDiffTotal;
+	}
+	
+	void setTotalDiff(int xDiff, int yDiff) {
+		xDiffTotal = xDiff;
+		yDiffTotal = yDiff;
 	}
 }

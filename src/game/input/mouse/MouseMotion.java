@@ -6,7 +6,7 @@ import java.awt.event.MouseMotionListener;
 import game.Game;
 
 public class MouseMotion implements MouseMotionListener {
-	int x, y, xDiff, yDiff;
+	int x, y;
 	boolean dragging = false;
 
 	public void mouseDragged(MouseEvent e) {
@@ -22,7 +22,8 @@ public class MouseMotion implements MouseMotionListener {
 	private void motion(MouseEvent e) {
 		x = e.getX();
 		y = e.getY();
-		xDiff = x - Game.centerX;
-		yDiff = y - Game.centerY;
+		Mouse.xDiffTotal += x - Game.centerX;
+		Mouse.yDiffTotal += y - Game.centerY;
+		if (Mouse.frame.isFocused()) Mouse.centerMouse();
 	}
 }
