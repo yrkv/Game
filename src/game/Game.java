@@ -166,6 +166,7 @@ public class Game extends Canvas implements Runnable {
 		
 		
 		for (int i = 0; i < 20000; i++) g.clearRect(0, 0, width, height); // this is here to slow it down for now. comment it out to see what happens.
+		// if your computer is faster or slower than mine, adjust the value until the game runs smoothly.
 		
 //		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
 		// I'm going to have to swap to a system using this if I want to map images to the models.
@@ -196,10 +197,23 @@ public class Game extends Canvas implements Runnable {
 				if (j == i) continue;
 				for (int k = 0; k < polygons[j].xpoints.length; k++) {
 					if (polygons[i].contains(polygons[j].xpoints[k], polygons[j].ypoints[k])) {
-						if (cam.getDistanceOfIntersection(i < points.length ? 3 : 4, i, level.getVertices()[j]) > cam.getDistance(level.getVertices()[j])); {// i needs to be changed to something else. Only works for now because points.length = 0.
-							Polygon temp = new Polygon(polygons[i].xpoints, polygons[i].ypoints, polygons[i].npoints);
-							polygons[i] = polygons[j];
-							polygons[j] = temp;
+						if (cam.getDistanceOfIntersection(
+								i < points.length ? 3 : 4,
+										(i < points.length ? i : i - points.length), 
+										level.getVertices()[level.getFaces(j < points.length ? 3 : 4)[j][k]]) 
+								< cam.getDistance(level.getVertices()[j])) {
+							if (i < j) {
+								Polygon temp = new Polygon(polygons[i].xpoints, polygons[i].ypoints, polygons[i].npoints);
+								polygons[i] = new Polygon(polygons[j].xpoints, polygons[j].ypoints, polygons[j].npoints);
+								polygons[j] = temp;
+							}
+						}
+						else {
+							if (j < i) {
+								Polygon temp = new Polygon(polygons[j].xpoints, polygons[j].ypoints, polygons[j].npoints);
+								polygons[j] = new Polygon(polygons[i].xpoints, polygons[i].ypoints, polygons[i].npoints);
+								polygons[i] = temp;
+							}
 						}
 					}
 				}
@@ -212,6 +226,8 @@ public class Game extends Canvas implements Runnable {
 			g.setColor(Color.black);
 			g.drawPolygon(polygons[i]);
 		}
+		
+		
 		
 		g.drawLine(mouse.x, mouse.y, mouse.x, mouse.y);
 		

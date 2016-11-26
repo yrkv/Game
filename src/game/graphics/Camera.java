@@ -81,9 +81,9 @@ public class Camera {
 		
 		double t = (d - (normalVector[0] * x + normalVector[1] * y + normalVector[2] * z)) / (normalVector[0] * directionVector[0] + normalVector[1] * directionVector[1] + normalVector[2] * directionVector[2]);
 		
-		double[] intersection = {x + t * directionVector[0], y + t * directionVector[1], z + t * directionVector[2]};
+		double[] intersection = {t * directionVector[0], t * directionVector[1], t * directionVector[2]};
 		
-		return Math.sqrt(intersection[0] * intersection[0] + intersection[1] * intersection[1] + intersection[2] * intersection[2]);
+		return Math.sqrt(Math.pow(intersection[0], 2) + Math.pow(intersection[1], 2) + Math.pow(intersection[2], 2));
 	}
 	
 	public double getDistance(double[] point) {
