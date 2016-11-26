@@ -26,7 +26,10 @@ public class Camera {
 	}
 	
 	public void rotate(double rotX, double rotY) {
-		this.rotX = rotX;
+		final double rotationLimit = 0.1;
+		this.rotX = rotX - rotationLimit < -Math.PI / 2 ? 
+				-Math.PI / 2 + rotationLimit : rotX + rotationLimit > Math.PI / 2 ?
+						Math.PI / 2 - rotationLimit : rotX;
 		this.rotY = rotY;
 	}
 	
@@ -58,14 +61,14 @@ public class Camera {
 		newV[2] = v[2] - z;
 		
 		double[] newerV = new double[3];
-		newerV[0] = newV[0];
-		newerV[1] = Math.cos(rotX) * newV[1] - Math.sin(rotX) * newV[2];
-		newerV[2] = Math.sin(rotX) * newV[1] + Math.cos(rotX) * newV[2];
+		newerV[0] = Math.cos(rotY) * newV[0] + Math.sin(rotY) * newV[2] + x;
+		newerV[1] = newV[1] + y;
+		newerV[2] = -Math.sin(rotY) * newV[0] + Math.cos(rotY) * newV[2] + z; 
 		
 		double[] newestV = new double[3];
-		newestV[0] = Math.cos(rotY) * newerV[0] + Math.sin(rotY) * newerV[2] + x;
-		newestV[1] = newerV[1] + y;
-		newestV[2] = -Math.sin(rotY) * newerV[0] + Math.cos(rotY) * newerV[2] + z; 
+		newestV[0] = newerV[0];
+		newestV[1] = Math.cos(rotX) * newerV[1] - Math.sin(rotX) * newerV[2];
+		newestV[2] = Math.sin(rotX) * newerV[1] + Math.cos(rotX) * newerV[2];
 		
 		return newestV;
 	}
