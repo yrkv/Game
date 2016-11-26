@@ -26,7 +26,7 @@ public class Camera {
 	}
 	
 	public void rotate(double rotX, double rotY) {
-		final double rotationLimit = 0.1;
+		final double rotationLimit = 0.01;
 		this.rotX = rotX - rotationLimit < -Math.PI / 2 ? 
 				-Math.PI / 2 + rotationLimit : rotX + rotationLimit > Math.PI / 2 ?
 						Math.PI / 2 - rotationLimit : rotX;
@@ -38,14 +38,23 @@ public class Camera {
 		int[][][] points = new int[f.length][n][2];
 		double[][] v = level.getV();
 		for (int i = 0;i < f.length; i++) {
+			boolean displayFace = true;
 			for (int j = 0; j < n; j++) {
 				double[] vertex = rotationMatrix(v[f[i][j]]);
 				int xPos = (int) Math.round(Game.width / 2 + ((x - vertex[0]) / (z - vertex[2]) * screenDist * pixelsToUnit));
 				int yPos = (int) Math.round(Game.height / 2 - ((y - vertex[1]) / (z - vertex[2]) * screenDist * pixelsToUnit));
-				
-				points[i][j][0] = xPos;
-				points[i][j][1] = yPos;
+				if (vertex[2] > z) {
+					points[i][j][0] = xPos;
+					points[i][j][1] = yPos;
+				} else {
+					displayFace = false;
+				}
 			}
+			if (!displayFace)
+				for (int j = 0; j < n; j++) {
+					points[i][j][0] = -1;
+					points[i][j][1] = -1;
+				}
 		}
 		
 		return points;
@@ -75,5 +84,9 @@ public class Camera {
 	
 	public double[] getRot() {
 		return new double[] {rotX, rotY};
+	}
+	
+	public double[] getPos() {
+		return new double[] {x, y, z};
 	}
 }

@@ -170,6 +170,9 @@ public class Game extends Canvas implements Runnable {
 		
 		g.drawLine(mouse.x, mouse.y, mouse.x, mouse.y);
 		
+		g.drawString("Rotation: " + cam.getRot()[0] + ", " + cam.getRot()[1], 0, 12);
+		g.drawString(String.format("Location: %.2f, %.2f, %.2f", cam.getPos()[0], cam.getPos()[1], cam.getPos()[2]), 0, 26);
+		
 		g.dispose();
 		bs.show();
 	}
