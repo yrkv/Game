@@ -5,10 +5,12 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Robot;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -34,6 +36,8 @@ public class Game extends Canvas implements Runnable {
 	private Camera cam;
 	private Keyboard key;
 	public Mouse mouse;
+	
+	private Color[] colors;
 
 	private BufferedImage image = new BufferedImage(width, height,
 			BufferedImage.TYPE_INT_RGB);
@@ -52,6 +56,15 @@ public class Game extends Canvas implements Runnable {
 		cam = new Camera(0, 0, 0, 0, 0, level);
 		
 		addKeyListener(key);
+		
+//		Random rand = new Random();
+//
+//		for (int i = 0; i < 6; i++) {
+//			float red = rand.nextFloat();
+//			float green = rand.nextFloat();
+//			float blue = rand.nextFloat();
+//			Color randomColor = new Color(red, green, blue);
+//		}
 	}
 
 	public static void main(String[] args)
@@ -98,11 +111,11 @@ public class Game extends Canvas implements Runnable {
 		if (key.q) cam.move(0, 0.1, 0);
 		if (key.e) cam.move(0, -0.1, 0);
 		
-		if (key.left) cam.move(-Math.cos(cam.getRot()[1])/10, 0, -Math.sin(cam.getRot()[1])/10);
-		if (key.right) cam.move(Math.cos(cam.getRot()[1])/10, 0, Math.sin(cam.getRot()[1])/10);
+		if (key.left) cam.move(-Math.cos(cam.getRotation()[1])/10, 0, -Math.sin(cam.getRotation()[1])/10);
+		if (key.right) cam.move(Math.cos(cam.getRotation()[1])/10, 0, Math.sin(cam.getRotation()[1])/10);
 		
-		if (key.up) cam.move(Math.sin(cam.getRot()[1])/10, 0, Math.cos(cam.getRot()[1])/10);
-		if (key.down) cam.move(-Math.sin(cam.getRot()[1])/10, 0, -Math.cos(cam.getRot()[1])/10);
+		if (key.up) cam.move(-Math.sin(cam.getRotation()[1])/10, 0, Math.cos(cam.getRotation()[1])/10);
+		if (key.down) cam.move(Math.sin(cam.getRotation()[1])/10, 0, -Math.cos(cam.getRotation()[1])/10);
 		
 		mouse.update();
 		cam.rotate(-mouse.getYDiffTotal() / 100.0, -mouse.getXDiffTotal() / 100.0);
@@ -145,33 +158,65 @@ public class Game extends Canvas implements Runnable {
 			return;
 		}
 		
-		Graphics g = bs.getDrawGraphics();
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), null); // this is uncommented for now so that the ups is stable
-		// I'm going to have to swap to a system using this if I want to map images to the models.
-		// I'm still not sure if I want to do that.
 		
-		g.setColor(Color.white);
+		
+		Graphics g = bs.getDrawGraphics();
+		g.clearRect(0, 0, width, height);
+		
+		
+		
+		for (int i = 0; i < 20000; i++) g.clearRect(0, 0, width, height); // this is here to slow it down for now. comment it out to see what happens.
+		
+//		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
+		// I'm going to have to swap to a system using this if I want to map images to the models.
+		// I'm still not sure if I want to do that because of how slow it is.
+		// I'm just going to fill in the polygons with various colors.
+		
+		g.setColor(Color.black);
 		
 		int[][][] points = cam.view(3);
+		int[][][] points2 = cam.view(4);
+		
+		Polygon[] polygons = new Polygon[points.length + points2.length];
 
 		for (int i = 0; i < points.length; i++) {
 			int[] a = {points[i][0][0], points[i][1][0], points[i][2][0]};
 			int[] b = {points[i][0][1], points[i][1][1], points[i][2][1]};
-			g.drawPolygon(a, b, 3);
+			polygons[i] = new Polygon(a, b, 3);
+		}
+
+		for (int i = 0; i < points2.length; i++) {
+			int[] a = {points2[i][0][0], points2[i][1][0], points2[i][2][0], points2[i][3][0]};
+			int[] b = {points2[i][0][1], points2[i][1][1], points2[i][2][1], points2[i][3][1]};
+			polygons[i + points.length] = new Polygon(a, b, 4);
 		}
 		
-		points = cam.view(4);
-
-		for (int i = 0; i < points.length; i++) {
-			int[] a = {points[i][0][0], points[i][1][0], points[i][2][0], points[i][3][0]};
-			int[] b = {points[i][0][1], points[i][1][1], points[i][2][1], points[i][3][1]};
-			g.drawPolygon(a, b, 4);
+		for (int i = 0; i < polygons.length; i++) {
+			for (int j = 0; j < polygons.length; j++) {
+				if (j == i) continue;
+				for (int k = 0; k < polygons[j].xpoints.length; k++) {
+					if (polygons[i].contains(polygons[j].xpoints[k], polygons[j].ypoints[k])) {
+						if (cam.getDistanceOfIntersection(i < points.length ? 3 : 4, i, level.getVertices()[j]) > cam.getDistance(level.getVertices()[j])); {// i needs to be changed to something else. Only works for now because points.length = 0.
+							Polygon temp = new Polygon(polygons[i].xpoints, polygons[i].ypoints, polygons[i].npoints);
+							polygons[i] = polygons[j];
+							polygons[j] = temp;
+						}
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i < polygons.length; i++) {
+			g.setColor(Color.blue);
+			g.fillPolygon(polygons[i]);
+			g.setColor(Color.black);
+			g.drawPolygon(polygons[i]);
 		}
 		
 		g.drawLine(mouse.x, mouse.y, mouse.x, mouse.y);
 		
-		g.drawString("Rotation: " + cam.getRot()[0] + ", " + cam.getRot()[1], 0, 12);
-		g.drawString(String.format("Location: %.2f, %.2f, %.2f", cam.getPos()[0], cam.getPos()[1], cam.getPos()[2]), 0, 26);
+		g.drawString("Rotation: " + cam.getRotation()[0] + ", " + cam.getRotation()[1], 0, 12);
+		g.drawString(String.format("Location: %.2f, %.2f, %.2f", cam.getPosition()[0], cam.getPosition()[1], cam.getPosition()[2]), 0, 26);
 		
 		g.dispose();
 		bs.show();

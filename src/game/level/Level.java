@@ -1,20 +1,19 @@
 package game.level;
 
 public class Level {
-	private int[][] f3, f4;
-	private double[][] v;
-	private int[][][] f;
+	private double[][] vertices;
+	private int[][][] faces;
 	
-	public Level(double[][] v, int[][][] f) {
-		this.v = v;
-		this.f = f;
+	public Level(double[][] vertices, int[][][] faces) {
+		this.vertices = vertices;
+		this.faces = faces;
 	}
 	
-	public double[][] getV()	{
-		return v;
+	public double[][] getVertices()	{
+		return vertices;
 	}
 	
-	public int[][] getF(int n) {
-		return f[n - 3];
+	public int[][] getFaces(int n) {
+		return faces[n - 3];
 	}
 }
