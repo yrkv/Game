@@ -22,8 +22,13 @@ public class MouseMotion implements MouseMotionListener {
 	private void motion(MouseEvent e) {
 		x = e.getX();
 		y = e.getY();
-		Mouse.xDiffTotal += x - Game.centerX;
-		Mouse.yDiffTotal += y - Game.centerY;
+		
+		Mouse.xDiffTotal += x - (Game.centerX - 3);  // works on AP comp sci computers
+		Mouse.yDiffTotal += y - (Game.centerY - 26); 
+		
+//		Mouse.xDiffTotal += x - (Game.centerX); // works on my computer at home
+//		Mouse.yDiffTotal += y - (Game.centerY);
+		
 		if (Mouse.frame.isFocused()) Mouse.centerMouse();
 	}
 }

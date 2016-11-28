@@ -159,14 +159,13 @@ public class Game extends Canvas implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 		
-		for (int i = 0; i < 10000; i++)
-			g.clearRect(0, 0, width, height);
+		g.clearRect(0, 0, width, height);
 		
 		Polygon[] polygons = cam.view();
 
 		for (int i = 0; i < polygons.length; i++) {
-			g.setColor(Color.blue);
-			g.fillPolygon(polygons[i]);
+//			g.setColor(Color.blue);
+//			g.fillPolygon(polygons[i]);
 			g.setColor(Color.black);
 			g.drawPolygon(polygons[i]);
 		}

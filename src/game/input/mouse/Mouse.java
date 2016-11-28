@@ -42,6 +42,14 @@ public class Mouse {
 	public static void centerMouse() {
 		robot.mouseMove((int) frame.getLocationOnScreen().getX() + Game.centerX,
 				(int) frame.getLocationOnScreen().getY() + Game.centerY);
+		
+//		System.out.println(frame.getLocationOnScreen().getY() + Game.centerY);
+	}
+	
+	public static void click() {
+		robot.mousePress(1);
+		robot.delay(10);
+		robot.mouseRelease(1);
 	}
 	
 	public int getXDiffTotal() {

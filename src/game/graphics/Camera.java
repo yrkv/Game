@@ -45,40 +45,49 @@ public class Camera {
 		
 		Polygon[] polygons = new Polygon[f[0].length + f[1].length];
 		
-		for (int n = 0; n <= 1; n++) {
-			for (int i = 0; i < f[n].length; i++) {
-				int[] xpoints = new int[n + 3];
-				int[] ypoints = new int[n + 3];
+//		for (int n = 0; n <= 1; n++) {
+		int n = 1; // change later
+		for (int i = 0; i < f[n].length; i++) {
+			int[] xpoints = new int[n + 3];
+			int[] ypoints = new int[n + 3];
+			
+			boolean displayFace = true;
+			for (int j = 0; j < f[n][i].length; j++) {
+				double[] vertex = rotateAroundCamera(v[f[n][i][j]]);
 				
-				boolean displayFace = true;
-				for (int j = 0; j < f[n][i].length; j++) {
-					double[] vertex = rotateAroundCamera(v[f[n][i][j]]);
-					
-					int xPos = (int) Math.round(Game.width / 2 + ((x - vertex[0]) / (z - vertex[2]) * screenDist * pixelsToUnit));
-					int yPos = (int) Math.round(Game.height / 2 - ((y - vertex[1]) / (z - vertex[2]) * screenDist * pixelsToUnit));
-					
-					if (vertex[2] > z) {
-						xpoints[j] = xPos;
-						ypoints[j] = yPos;
-					} else {
-						displayFace = false;
-					}
+				int xPos = (int) Math.round(Game.width / 2 + ((x - vertex[0]) / (z - vertex[2]) * screenDist * pixelsToUnit));
+				int yPos = (int) Math.round(Game.height / 2 - ((y - vertex[1]) / (z - vertex[2]) * screenDist * pixelsToUnit));
+				
+				if (vertex[2] > z) {
+					xpoints[j] = xPos;
+					ypoints[j] = yPos;
+				} else {
+					displayFace = false;
 				}
-				
-				if (!displayFace)
-					for (int j = 0; j < n; j++) {
-						xpoints[j] = -1;
-						ypoints[j] = -1;
-					}
-				
-				polygons[i] = new Polygon(xpoints, ypoints, n + 3);
+			}
+			
+			if (!displayFace)
+				for (int j = 0; j < n; j++) {
+					xpoints[j] = -1;
+					ypoints[j] = -1;
+				}
+			
+			polygons[i] = new Polygon(xpoints, ypoints, n + 3);
+		}
+//		}
+		
+		boolean[][][] pointsInPolygons = new boolean[polygons.length][][];
+		
+		for (int i = 0; i < polygons.length; i++) {
+			
+			for (int j = i + 1; j < polygons.length; j++) {
+				for (int point = 0; point < polygons[i].npoints; point++) {
+					
+				}
 			}
 		}
 		
-		int[] arr = new int[polygons.length];
-		for (int i = 0; i < arr.length; i++) arr[i] = i;
-		
-		for (int i = 0; i < polygons.length; i++) {
+		/*for (int i = 0; i < polygons.length; i++) {
 			for (int j = 0; j < polygons.length; j++) {
 				if (j == i) continue;
 				
@@ -117,10 +126,8 @@ public class Camera {
 					}
 				}
 			}
-		}
+		}*/
 		
-		for (int i = 0; i < arr.length; i++) System.out.print(arr[i] + ", ");
-		System.out.println();
 		return polygons;
 	}
 	
