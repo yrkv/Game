@@ -157,69 +157,13 @@ public class Game extends Canvas implements Runnable {
 			createBufferStrategy(3);
 			return;
 		}
-		
-		
-		
 		Graphics g = bs.getDrawGraphics();
-		g.clearRect(0, 0, width, height);
 		
+		for (int i = 0; i < 10000; i++)
+			g.clearRect(0, 0, width, height);
 		
-		
-		for (int i = 0; i < 20000; i++) g.clearRect(0, 0, width, height); // this is here to slow it down for now. comment it out to see what happens.
-		// if your computer is faster or slower than mine, adjust the value until the game runs smoothly.
-		
-//		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-		// I'm going to have to swap to a system using this if I want to map images to the models.
-		// I'm still not sure if I want to do that because of how slow it is.
-		// I'm just going to fill in the polygons with various colors.
-		
-		g.setColor(Color.black);
-		
-		int[][][] points = cam.view(3);
-		int[][][] points2 = cam.view(4);
-		
-		Polygon[] polygons = new Polygon[points.length + points2.length];
+		Polygon[] polygons = cam.view();
 
-		for (int i = 0; i < points.length; i++) {
-			int[] a = {points[i][0][0], points[i][1][0], points[i][2][0]};
-			int[] b = {points[i][0][1], points[i][1][1], points[i][2][1]};
-			polygons[i] = new Polygon(a, b, 3);
-		}
-
-		for (int i = 0; i < points2.length; i++) {
-			int[] a = {points2[i][0][0], points2[i][1][0], points2[i][2][0], points2[i][3][0]};
-			int[] b = {points2[i][0][1], points2[i][1][1], points2[i][2][1], points2[i][3][1]};
-			polygons[i + points.length] = new Polygon(a, b, 4);
-		}
-		
-		for (int i = 0; i < polygons.length; i++) {
-			for (int j = 0; j < polygons.length; j++) {
-				if (j == i) continue;
-				for (int k = 0; k < polygons[j].xpoints.length; k++) {
-					if (polygons[i].contains(polygons[j].xpoints[k], polygons[j].ypoints[k])) {
-						if (cam.getDistanceOfIntersection(
-								i < points.length ? 3 : 4,
-										(i < points.length ? i : i - points.length), 
-										level.getVertices()[level.getFaces(j < points.length ? 3 : 4)[j][k]]) 
-								< cam.getDistance(level.getVertices()[j])) {
-							if (i < j) {
-								Polygon temp = new Polygon(polygons[i].xpoints, polygons[i].ypoints, polygons[i].npoints);
-								polygons[i] = new Polygon(polygons[j].xpoints, polygons[j].ypoints, polygons[j].npoints);
-								polygons[j] = temp;
-							}
-						}
-						else {
-							if (j < i) {
-								Polygon temp = new Polygon(polygons[j].xpoints, polygons[j].ypoints, polygons[j].npoints);
-								polygons[j] = new Polygon(polygons[i].xpoints, polygons[i].ypoints, polygons[i].npoints);
-								polygons[i] = temp;
-							}
-						}
-					}
-				}
-			}
-		}
-		
 		for (int i = 0; i < polygons.length; i++) {
 			g.setColor(Color.blue);
 			g.fillPolygon(polygons[i]);

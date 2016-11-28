@@ -16,4 +16,8 @@ public class Level {
 	public int[][] getFaces(int n) {
 		return faces[n - 3];
 	}
+	
+	public int[][][] getFaces() {
+		return faces;
+	}
 }
