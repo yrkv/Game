@@ -1,16 +1,12 @@
 package game;
 
-import java.awt.AWTException;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
-import java.awt.Robot;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.util.Random;
 
 import javax.swing.JFrame;
 
@@ -22,10 +18,10 @@ import game.level.Level;
 
 public class Game extends Canvas implements Runnable {
 	public static int totalTicks = 0;
-	public static int width = 1024;
-	public static int height = width * 9 / 16; // 576
-	public static int centerX = width / 2;
-	public static int centerY = height / 2;
+	public static int width;
+	public static int height;
+	public static int centerX;
+	public static int centerY;
 	
 	private boolean running = false;
 
@@ -37,55 +33,41 @@ public class Game extends Canvas implements Runnable {
 	private Keyboard key;
 	public Mouse mouse;
 	
-	private Color[] colors;
-
-	private BufferedImage image = new BufferedImage(width, height,
-			BufferedImage.TYPE_INT_RGB);
-	private int[] pixels = ((DataBufferInt) image.getRaster()
-			.getDataBuffer()).getData();
-	
 	public Game()
 	{
 		frame = new JFrame();
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setUndecorated(true);
+
+		frame.setCursor(frame.getToolkit().createCustomCursor(
+				new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
+				"null"));
+
+		frame.setVisible(true);
+		height = frame.getHeight();
+		width = frame.getWidth();
+		centerY = height / 2;
+		centerX = width / 2;
+
 		screen = new Screen(width, height);
-		double[][] v = {{1, 0, 10}, {0, 0, 10}, {0, 1, 10}, {1, 1, 10}, {1, 0, 11}, {0, 0, 11}, {0, 1, 11}, {1, 1, 11}};
-		int[][][] f = {{}, {{0, 1, 2, 3}, {4, 5, 6, 7}, {1, 2, 6, 5}, {2, 3, 7, 6}, {0, 1, 5, 4}, {0, 3, 7, 4}}};
 		
-		level = new Level(v, f);
+		level = new Level("res/level.txt");
 		key = new Keyboard();
 		cam = new Camera(0, 0, 0, 0, 0, level);
 		
 		addKeyListener(key);
-		
-//		Random rand = new Random();
-//
-//		for (int i = 0; i < 6; i++) {
-//			float red = rand.nextFloat();
-//			float green = rand.nextFloat();
-//			float blue = rand.nextFloat();
-//			Color randomColor = new Color(red, green, blue);
-//		}
 	}
 
 	public static void main(String[] args)
 	{
 		Game game = new Game();
-		game.frame = new JFrame();
 		game.mouse = new Mouse(game);
-
-		game.frame.setSize(width, height);
-		game.frame.setResizable(false);
-		game.frame.setTitle("game");
-		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		game.frame.setLocationRelativeTo(null);
-
 		game.frame.add(game);
-		game.frame.setCursor(game.frame.getToolkit().createCustomCursor(
-	            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
-	            "null"));
-
 		game.frame.setVisible(true);
-		
 		game.start();
 	}
 	
@@ -93,7 +75,6 @@ public class Game extends Canvas implements Runnable {
 		thread = new Thread(this, "Display");
 		thread.start();
 		running = true;
-		Mouse.centerMouse();
 	}
 	
 	private synchronized void stop() {

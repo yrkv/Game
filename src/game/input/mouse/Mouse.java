@@ -2,6 +2,7 @@ package game.input.mouse;
 
 import java.awt.AWTException;
 import java.awt.Robot;
+import java.awt.event.InputEvent;
 
 import javax.swing.JFrame;
 
@@ -10,9 +11,7 @@ import game.Game;
 public class Mouse {
 	public int x, y;
 	public boolean dragging;
-
-	static int xDiffTotal;
-	static int yDiffTotal;
+	static int xDiffTotal, yDiffTotal;
 	
 	private static Robot robot;
 	static JFrame frame;
@@ -36,20 +35,23 @@ public class Mouse {
 	public void update() {
 		x = mouseMotion.x;
 		y = mouseMotion.y;
-		if (Game.totalTicks == 0) centerMouse();
+		if (Game.totalTicks == 0) {
+			centerMouse();
+			robot.delay(10);
+			click();
+			robot.delay(10);
+			centerMouse();
+		}
 	}
 	
-	public static void centerMouse() {
-		robot.mouseMove((int) frame.getLocationOnScreen().getX() + Game.centerX,
-				(int) frame.getLocationOnScreen().getY() + Game.centerY);
-		
-//		System.out.println(frame.getLocationOnScreen().getY() + Game.centerY);
+	protected static void centerMouse() {
+		robot.mouseMove(Game.centerX, Game.centerY);
 	}
-	
-	public static void click() {
-		robot.mousePress(1);
+
+	private static void click() {
+		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.delay(10);
-		robot.mouseRelease(1);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
 	
 	public int getXDiffTotal() {
