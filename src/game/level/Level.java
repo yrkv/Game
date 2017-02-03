@@ -5,6 +5,7 @@ import java.io.IOException;
 public class Level {
 	private double[][] vertices;
 	private int[][][] faces;
+	private int[][] edges;
 	
 	public Level(String path) {
 		LevelReader lr = null;
@@ -16,6 +17,7 @@ public class Level {
 
 		this.vertices = lr.v;
 		this.faces = lr.f;
+		this.edges = lr.e;
 	}
 	
 	public double[][] getVertices()	{
@@ -28,5 +30,9 @@ public class Level {
 	
 	public int[][][] getFaces() {
 		return faces;
+	}
+
+	public int[][] getEdges() {
+		return edges;
 	}
 }

@@ -5,12 +5,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import game.graphics.Camera;
+import game.graphics.RenderingLine;
 import game.graphics.Screen;
 import game.input.Keyboard;
 import game.input.mouse.Mouse;
@@ -58,7 +61,7 @@ public class Game extends Canvas implements Runnable {
 		level = new Level("res/level.txt");
 		key = new Keyboard();
 		cam = new Camera(0, 0, 0, 0, 0, level);
-		
+
 		addKeyListener(key);
 	}
 
@@ -75,6 +78,7 @@ public class Game extends Canvas implements Runnable {
 		thread = new Thread(this, "Display");
 		thread.start();
 		running = true;
+		mouse.start();
 	}
 	
 	private synchronized void stop() {
@@ -141,17 +145,29 @@ public class Game extends Canvas implements Runnable {
 		Graphics g = bs.getDrawGraphics();
 		
 		g.clearRect(0, 0, width, height);
-		
-		Polygon[] polygons = cam.view();
 
-		for (int i = 0; i < polygons.length; i++) {
+		g.setColor(Color.BLACK);
+		
+//		Polygon[] polygons = cam.view();
+//
+//		for (int i = 0; i < polygons.length; i++) {
 //			g.setColor(Color.blue);
 //			g.fillPolygon(polygons[i]);
-			g.setColor(Color.black);
-			g.drawPolygon(polygons[i]);
+//			g.setColor(Color.black);
+//			g.drawPolygon(polygons[i]);
+//		}
+
+		ArrayList<RenderingLine> lines = cam.newView();
+
+//		for (int i = 0; i < lines.size(); i++) {
+//			g.setColor(Color.BLACK);
+//			if (lines[i].render) g.drawLine((int) lines[i].x1, (int) lines[i].y1, (int) lines[i].x2, (int) lines[i].y2);
+//		}
+
+		while (!lines.isEmpty()) {
+			RenderingLine line = lines.remove(0);
+			if (line.render) g.drawLine((int) line.x1, (int) line.y1, (int) line.x2, (int) line.y2);
 		}
-		
-		
 		
 		g.drawLine(mouse.x, mouse.y, mouse.x, mouse.y);
 		

@@ -9,13 +9,15 @@ import java.util.StringTokenizer;
 public class LevelReader {
 	protected double[][] v;
 	protected int[][][] f;
+	protected int[][] e;
 
 	public LevelReader(String path) throws IOException {
 		BufferedReader fr = new BufferedReader(new FileReader(path));
 
 		String vLine = fr.readLine();
 		StringTokenizer st = new StringTokenizer(vLine);
-		st.nextToken();
+		String nextToken = st.nextToken();
+		assert nextToken.equals("v") : "invalid file";
 		int vertices = Integer.parseInt(st.nextToken());
 		v = new double[vertices][3];
 		for (int i = 0; i < vertices; i++) {
@@ -27,7 +29,8 @@ public class LevelReader {
 
 		String fLine = fr.readLine();
 		st = new StringTokenizer(fLine);
-		st.nextToken();
+		nextToken = st.nextToken();
+		assert nextToken.equals("f") : "invalid file";
 		int faces3 = Integer.parseInt(st.nextToken());
 		int faces4 = Integer.parseInt(st.nextToken());
 		f = new int[][][] {new int[faces3][3], new int[faces4][4]};
@@ -43,6 +46,21 @@ public class LevelReader {
 			f[1][i][1] = Integer.parseInt(face.nextToken());
 			f[1][i][2] = Integer.parseInt(face.nextToken());
 			f[1][i][3] = Integer.parseInt(face.nextToken());
+		}
+
+		String eLine = fr.readLine();
+		st = new StringTokenizer(eLine);
+		nextToken = st.nextToken();
+		assert nextToken.equals("e") : "invalid file";
+		int edges = Integer.parseInt(st.nextToken());
+
+		e = new int[edges][4];
+		for (int i = 0; i < edges; i++) {
+			StringTokenizer edge = new StringTokenizer(fr.readLine());
+			e[i][0] = Integer.parseInt(edge.nextToken());
+			e[i][1] = Integer.parseInt(edge.nextToken());
+			e[i][2] = Integer.parseInt(edge.nextToken());
+			e[i][3] = Integer.parseInt(edge.nextToken());
 		}
 	}
 }

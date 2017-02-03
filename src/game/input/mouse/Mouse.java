@@ -35,13 +35,15 @@ public class Mouse {
 	public void update() {
 		x = mouseMotion.x;
 		y = mouseMotion.y;
-		if (Game.totalTicks == 0) {
-			centerMouse();
-			robot.delay(10);
-			click();
-			robot.delay(10);
-			centerMouse();
-		}
+	}
+
+	public void start() {
+		robot.delay(10);
+		centerMouse();
+		robot.delay(10);
+		click();
+		robot.delay(10);
+		centerMouse();
 	}
 	
 	protected static void centerMouse() {
